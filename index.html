@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="en" id="html-root">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mood2Plate - AI Food Recommender</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+        }
+    </script>
+    <style>
+        body {
+            background-color: #e5e7eb;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            font-family: system-ui, -apple-system, sans-serif;
+        }
+        .phone-frame {
+            width: 100%;
+            max-width: 400px;
+            height: 820px;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+            border-radius: 44px;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            position: relative;
+        }
+    </style>
+</head>
+<body class="transition-colors duration-300">
+
+    <div class="phone-frame bg-white dark:bg-gray-900 text-gray-800 dark:text-gray-100 border-8 border-gray-800 dark:border-gray-700">
+        
+        <!-- Top Navigation / Header -->
+        <div class="px-6 pt-6 pb-2 flex justify-between items-center">
+            <!-- Saved / Favorites Button added here -->
+            <button onclick="openFavorites()" class="flex items-center space-x-1.5 px-3 py-1.5 rounded-full bg-red-50 dark:bg-red-950/50 text-red-600 dark:text-red-400 font-semibold text-xs hover:scale-105 transition-transform">
+                <span>❤️</span>
+                <span>Saved</span>
+            </button>
+            
+            <div class="flex items-center space-x-2">
+                <!-- Dark Mode Toggle Button -->
+                <button onclick="toggleDarkMode()" class="p-2 rounded-full bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-300 hover:scale-105 transition-transform" title="Toggle Theme">
+                    <span id="theme-icon">🌙</span>
+                </button>
+            </div>
+        </div>
+
+        <!-- Screen 1: Home / Mood Selector -->
+        <div id="screen-home" class="flex-1 flex flex-col p-6 justify-between overflow-y-auto">
+            <div>
+                <span class="text-xs font-bold uppercase tracking-wider text-indigo-600 dark:text-indigo-400 bg-indigo-50 dark:bg-indigo-950 px-3 py-1 rounded-full inline-block mb-2">AI Recommender</span>
+                <h1 class="text-3xl font-extrabold tracking-tight mb-2">How are you feeling today?</h1>
+                <p class="text-gray-500 dark:text-gray-400 text-sm mb-4">Select your mood & preferences to let our AI match your cravings.</p>
+
+                <!-- Interactive Preference Tags -->
+                <div class="mb-4">
+                    <span class="text-xs font-semibold text-gray-400 uppercase tracking-wider block mb-2">Quick Filters</span>
+                    <div class="flex flex-wrap gap-2">
+                        <button onclick="toggleTag(this)" class="tag-btn px-3.5 py-1.5 rounded-full text-xs font-medium bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-300 border border-transparent transition-all">⚡ Under 20m</button>
+                        <button onclick="toggleTag(this)" class="tag-btn px-3.5 py-1.5 rounded-full text-xs font-medium bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-300 border border-transparent transition-all">🌱 Vegan</button>
+                        <button onclick="toggleTag(this)" class="tag-btn px-3.5 py-1.5 rounded-full text-xs font-medium bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-300 border border-transparent transition-all">💪 High Protein</button>
+                    </div>
+                </div>
+
+                <span class="text-xs font-semibold text-gray-400 uppercase tracking-wider block mb-2">Choose Your Mood</span>
+
+                <!-- Mood Options Grid -->
+                <div class="grid grid-cols-2 gap-3 pb-2">
+                    <button onclick="selectMood('Cozy & Lazy', '🍲', 'Creamy Truffle Pasta', 'Rich, comforting carbs and warm spices to soothe your evening.')" class="p-3.5 bg-orange-50 dark:bg-gray-800/60 border-2 border-orange-100 dark:border-gray-700 rounded-2xl flex flex-col items-center hover:border-orange-400 dark:hover:border-indigo-500 transition-all text-center group">
+                        <span class="text-3xl mb-1 group-hover:scale-110 transition-transform">🛋️</span>
+                        <span class="font-bold text-xs">Cozy & Lazy</span>
+                    </button>
+                    <button onclick="selectMood('Need Energy', '⚡', 'Spicy Sriracha Chicken Bowl', 'Instant energy boost with high-protein goodness and vital nutrients.')" class="p-3.5 bg-purple-50 dark:bg-gray-800/60 border-2 border-purple-100 dark:border-gray-700 rounded-2xl flex flex-col items-center hover:border-purple-400 dark:hover:border-indigo-500 transition-all text-center group">
+                        <span class="text-3xl mb-1 group-hover:scale-110 transition-transform">🔋</span>
+                        <span class="font-bold text-xs">Need Energy</span>
+                    </button>
+                    <button onclick="selectMood('Happy & Social', '🎉', 'Loaded Nachos Platter', 'Vibrant, colorful flavors and shareable tapas meant for good times.')" class="p-3.5 bg-yellow-50 dark:bg-gray-800/60 border-2 border-yellow-100 dark:border-gray-700 rounded-2xl flex flex-col items-center hover:border-yellow-400 dark:hover:border-indigo-500 transition-all text-center group">
+                        <span class="text-3xl mb-1 group-hover:scale-110 transition-transform">🥳</span>
+                        <span class="font-bold text-xs">Happy & Social</span>
+                    </button>
+                    <button onclick="selectMood('Healthy & Fresh', '🥗', 'Avocado & Quinoa Salad', 'Clean nutrients, greens, and superfoods to keep your mind sharp.')" class="p-3.5 bg-green-50 dark:bg-gray-800/60 border-2 border-green-100 dark:border-gray-700 rounded-2xl flex flex-col items-center hover:border-green-400 dark:hover:border-indigo-500 transition-all text-center group">
+                        <span class="text-3xl mb-1 group-hover:scale-110 transition-transform">🌿</span>
+                        <span class="font-bold text-xs">Healthy & Light</span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Footer Note -->
+            <div class="text-center text-xs text-gray-400 pt-2 pb-1">
+                Interactive Mockup • Click any card to trigger AI
+            </div>
+        </div>
+
+        <!-- Screen 2: Loading State -->
+        <div id="screen-loading" class="hidden flex-1 flex flex-col items-center justify-center p-6 text-center">
+            <div class="animate-spin rounded-full h-14 w-14 border-b-4 border-indigo-600 mb-6"></div>
+            <h2 class="text-lg font-bold mb-2">AI Engine analyzing parameters...</h2>
+            <p class="text-xs text-gray-500 dark:text-gray-400">Processing mood vectors & preference tags against 500+ recipes.</p>
+        </div>
+
+        <!-- Screen 3: Recommender Result -->
+        <div id="screen-result" class="hidden flex-1 flex flex-col p-6 justify-between overflow-y-auto">
+            <div>
+                <!-- Top Result Bar -->
+                <div class="flex justify-between items-center mb-4">
+                    <button onclick="goBack()" class="text-xs font-semibold text-gray-600 dark:text-gray-300 bg-gray-100 dark:bg-gray-800 px-3 py-1.5 rounded-xl hover:bg-gray-200 transition-colors">← Back</button>
+                    
+                    <div class="flex items-center space-x-2">
+                        <span class="text-xs font-bold text-green-600 dark:text-green-400 bg-green-50 dark:bg-green-950 px-2.5 py-1 rounded-full">98% Match</span>
+                        <!-- Favorite Heart Button -->
+                        <button onclick="toggleFavorite(this)" class="p-2 rounded-full bg-gray-100 dark:bg-gray-800 text-gray-400 hover:text-red-500 transition-colors">
+                            <span id="heart-icon" class="text-base">❤️</span>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Visual Mockup Box -->
+                <div class="bg-gray-100 dark:bg-gray-800 rounded-3xl h-40 mb-4 flex items-center justify-center relative overflow-hidden shadow-inner">
+                    <span id="mood-emoji" class="text-6xl">🍲</span>
+                </div>
+
+                <h2 id="result-title" class="text-2xl font-extrabold mb-1">Creamy Truffle Pasta</h2>
+                <p id="result-desc" class="text-gray-500 dark:text-gray-400 text-sm mb-4">Rich, comforting carbs to warm your soul and elevate your evening mood.</p>
+                
+                <!-- AI Explanation Box -->
+                <div class="bg-indigo-50 dark:bg-gray-800/80 border border-indigo-100 dark:border-gray-700 p-3.5 rounded-2xl mb-4">
+                    <div class="text-[11px] font-bold text-indigo-700 dark:text-indigo-400 uppercase tracking-wide mb-1">🤖 Why this recommendation?</div>
+                    <p class="text-xs text-indigo-900 dark:text-indigo-200 leading-relaxed">Based on your mood vector and selected tags, our model calculated a high affinity for warm, comforting textures.</p>
+                </div>
+            </div>
+
+            <!-- Action Buttons -->
+            <div class="space-y-2.5 pt-2">
+                <button onclick="showToast('Recipe instructions unlocked!')" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-3.5 rounded-2xl shadow-lg shadow-indigo-600/25 transition-all text-sm">
+                    View Full Recipe & Instructions
+                </button>
+                <button onclick="goBack()" class="w-full bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300 font-semibold py-3.5 rounded-2xl hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors text-sm">
+                    Try Another Mood
+                </button>
+            </div>
+        </div>
+
+        <!-- Screen 4: Saved / Favorites Screen -->
+        <div id="screen-favorites" class="hidden flex-1 flex flex-col p-6 justify-between overflow-y-auto">
+            <div>
+                <div class="flex justify-between items-center mb-6">
+                    <button onclick="goBack()" class="text-xs font-semibold text-gray-600 dark:text-gray-300 bg-gray-100 dark:bg-gray-800 px-3 py-1.5 rounded-xl hover:bg-gray-200 transition-colors">← Back</button>
+                    <span class="text-sm font-bold">Saved Recipes</span>
+                    <div class="w-10"></div>
+                </div>
+
+                <div id="favorites-list" class="space-y-3">
+                    <div class="p-4 bg-gray-50 dark:bg-gray-800/60 rounded-2xl border border-gray-100 dark:border-gray-700 flex items-center justify-between">
+                        <div class="flex items-center space-x-3">
+                            <span class="text-3xl">🍲</span>
+                            <div>
+                                <h4 class="font-bold text-sm">Creamy Truffle Pasta</h4>
+                                <span class="text-[11px] text-gray-400">Cozy & Lazy Mood</span>
+                            </div>
+                        </div>
+                        <span class="text-xs font-semibold text-green-600 dark:text-green-400">98%</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="pt-4 text-center">
+                <span class="text-xs text-gray-400">Synced with AI Recommendation History</span>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- Toast Notification Popup -->
+    <div id="toast" class="fixed bottom-8 bg-gray-900 text-white dark:bg-white dark:text-gray-900 px-4 py-2.5 rounded-xl shadow-xl text-xs font-medium opacity-0 translate-y-4 transition-all pointer-events-none">
+        ✨ Action simulated: Recipe saved to favorites!
+    </div>
+
+    <!-- JavaScript Logic -->
+    <script>
+        function toggleTag(btn) {
+            btn.classList.toggle('bg-indigo-600');
+            btn.classList.toggle('text-white');
+            btn.classList.toggle('dark:bg-indigo-600');
+            btn.classList.toggle('bg-gray-100');
+            btn.classList.toggle('dark:bg-gray-800');
+            btn.classList.toggle('text-gray-600');
+            btn.classList.toggle('dark:text-gray-300');
+        }
+
+        function toggleDarkMode() {
+            const html = document.getElementById('html-root');
+            const themeIcon = document.getElementById('theme-icon');
+            html.classList.toggle('dark');
+            if (html.classList.contains('dark')) {
+                themeIcon.innerText = '☀️';
+            } else {
+                themeIcon.innerText = '🌙';
+            }
+        }
+
+        function toggleFavorite(btn) {
+            btn.classList.toggle('text-red-500');
+            showToast("Recipe saved to favorites!");
+        }
+
+        function selectMood(moodName, emoji, recipeName, description) {
+            document.getElementById('screen-home').classList.add('hidden');
+            document.getElementById('screen-favorites').classList.add('hidden');
+            document.getElementById('screen-result').classList.add('hidden');
+            document.getElementById('screen-loading').classList.remove('hidden');
+
+            setTimeout(() => {
+                document.getElementById('screen-loading').classList.add('hidden');
+                
+                document.getElementById('mood-emoji').innerText = emoji;
+                document.getElementById('result-title').innerText = recipeName;
+                document.getElementById('result-desc').innerText = description;
+
+                document.getElementById('screen-result').classList.remove('hidden');
+            }, 1000);
+        }
+
+        function openFavorites() {
+            document.getElementById('screen-home').classList.add('hidden');
+            document.getElementById('screen-result').classList.add('hidden');
+            document.getElementById('screen-loading').classList.add('hidden');
+            document.getElementById('screen-favorites').classList.remove('hidden');
+        }
+
+        function goBack() {
+            document.getElementById('screen-result').classList.add('hidden');
+            document.getElementById('screen-favorites').classList.add('hidden');
+            document.getElementById('screen-loading').classList.add('hidden');
+            document.getElementById('screen-home').classList.remove('hidden');
+        }
+
+        function showToast(customText = "Action simulated successfully!") {
+            const toast = document.getElementById('toast');
+            toast.innerText = "✨ " + customText;
+            toast.classList.remove('opacity-0', 'translate-y-4');
+            setTimeout(() => {
+                toast.classList.add('opacity-0', 'translate-y-4');
+            }, 2200);
+        }
+    </script>
+</body>
+</html>
