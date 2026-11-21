@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Mood4Plate - AI Food Recommender</title>
+    <title>Mood2Plate - AI Food Recommender</title>
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
@@ -40,14 +40,12 @@
         
         <!-- Top Navigation / Header -->
         <div class="px-6 pt-6 pb-2 flex justify-between items-center">
-            <!-- Saved / Favorites Button added here -->
             <button onclick="openFavorites()" class="flex items-center space-x-1.5 px-3 py-1.5 rounded-full bg-red-50 dark:bg-red-950/50 text-red-600 dark:text-red-400 font-semibold text-xs hover:scale-105 transition-transform">
                 <span>❤️</span>
-                <span>Saved</span>
+                <span>Saved (<span id="saved-count">1</span>)</span>
             </button>
             
             <div class="flex items-center space-x-2">
-                <!-- Dark Mode Toggle Button -->
                 <button onclick="toggleDarkMode()" class="p-2 rounded-full bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-300 hover:scale-105 transition-transform" title="Toggle Theme">
                     <span id="theme-icon">🌙</span>
                 </button>
@@ -75,26 +73,25 @@
 
                 <!-- Mood Options Grid -->
                 <div class="grid grid-cols-2 gap-3 pb-2">
-                    <button onclick="selectMood('Cozy & Lazy', '🍲', 'Creamy Truffle Pasta', 'Rich, comforting carbs and warm spices to soothe your evening.')" class="p-3.5 bg-orange-50 dark:bg-gray-800/60 border-2 border-orange-100 dark:border-gray-700 rounded-2xl flex flex-col items-center hover:border-orange-400 dark:hover:border-indigo-500 transition-all text-center group">
+                    <button onclick="selectMood('cozy')" class="p-3.5 bg-orange-50 dark:bg-gray-800/60 border-2 border-orange-100 dark:border-gray-700 rounded-2xl flex flex-col items-center hover:border-orange-400 dark:hover:border-indigo-500 transition-all text-center group">
                         <span class="text-3xl mb-1 group-hover:scale-110 transition-transform">🛋️</span>
                         <span class="font-bold text-xs">Cozy & Lazy</span>
                     </button>
-                    <button onclick="selectMood('Need Energy', '⚡', 'Spicy Sriracha Chicken Bowl', 'Instant energy boost with high-protein goodness and vital nutrients.')" class="p-3.5 bg-purple-50 dark:bg-gray-800/60 border-2 border-purple-100 dark:border-gray-700 rounded-2xl flex flex-col items-center hover:border-purple-400 dark:hover:border-indigo-500 transition-all text-center group">
+                    <button onclick="selectMood('energy')" class="p-3.5 bg-purple-50 dark:bg-gray-800/60 border-2 border-purple-100 dark:border-gray-700 rounded-2xl flex flex-col items-center hover:border-purple-400 dark:hover:border-indigo-500 transition-all text-center group">
                         <span class="text-3xl mb-1 group-hover:scale-110 transition-transform">🔋</span>
                         <span class="font-bold text-xs">Need Energy</span>
                     </button>
-                    <button onclick="selectMood('Happy & Social', '🎉', 'Loaded Nachos Platter', 'Vibrant, colorful flavors and shareable tapas meant for good times.')" class="p-3.5 bg-yellow-50 dark:bg-gray-800/60 border-2 border-yellow-100 dark:border-gray-700 rounded-2xl flex flex-col items-center hover:border-yellow-400 dark:hover:border-indigo-500 transition-all text-center group">
+                    <button onclick="selectMood('social')" class="p-3.5 bg-yellow-50 dark:bg-gray-800/60 border-2 border-yellow-100 dark:border-gray-700 rounded-2xl flex flex-col items-center hover:border-yellow-400 dark:hover:border-indigo-500 transition-all text-center group">
                         <span class="text-3xl mb-1 group-hover:scale-110 transition-transform">🥳</span>
                         <span class="font-bold text-xs">Happy & Social</span>
                     </button>
-                    <button onclick="selectMood('Healthy & Fresh', '🥗', 'Avocado & Quinoa Salad', 'Clean nutrients, greens, and superfoods to keep your mind sharp.')" class="p-3.5 bg-green-50 dark:bg-gray-800/60 border-2 border-green-100 dark:border-gray-700 rounded-2xl flex flex-col items-center hover:border-green-400 dark:hover:border-indigo-500 transition-all text-center group">
+                    <button onclick="selectMood('healthy')" class="p-3.5 bg-green-50 dark:bg-gray-800/60 border-2 border-green-100 dark:border-gray-700 rounded-2xl flex flex-col items-center hover:border-green-400 dark:hover:border-indigo-500 transition-all text-center group">
                         <span class="text-3xl mb-1 group-hover:scale-110 transition-transform">🌿</span>
                         <span class="font-bold text-xs">Healthy & Light</span>
                     </button>
                 </div>
             </div>
 
-            <!-- Footer Note -->
             <div class="text-center text-xs text-gray-400 pt-2 pb-1">
                 Interactive Mockup • Click any card to trigger AI
             </div>
@@ -110,20 +107,17 @@
         <!-- Screen 3: Recommender Result -->
         <div id="screen-result" class="hidden flex-1 flex flex-col p-6 justify-between overflow-y-auto">
             <div>
-                <!-- Top Result Bar -->
                 <div class="flex justify-between items-center mb-4">
                     <button onclick="goBack()" class="text-xs font-semibold text-gray-600 dark:text-gray-300 bg-gray-100 dark:bg-gray-800 px-3 py-1.5 rounded-xl hover:bg-gray-200 transition-colors">← Back</button>
                     
                     <div class="flex items-center space-x-2">
-                        <span class="text-xs font-bold text-green-600 dark:text-green-400 bg-green-50 dark:bg-green-950 px-2.5 py-1 rounded-full">98% Match</span>
-                        <!-- Favorite Heart Button -->
+                        <span id="result-match" class="text-xs font-bold text-green-600 dark:text-green-400 bg-green-50 dark:bg-green-950 px-2.5 py-1 rounded-full">98% Match</span>
                         <button onclick="toggleFavorite(this)" class="p-2 rounded-full bg-gray-100 dark:bg-gray-800 text-gray-400 hover:text-red-500 transition-colors">
                             <span id="heart-icon" class="text-base">❤️</span>
                         </button>
                     </div>
                 </div>
 
-                <!-- Visual Mockup Box -->
                 <div class="bg-gray-100 dark:bg-gray-800 rounded-3xl h-40 mb-4 flex items-center justify-center relative overflow-hidden shadow-inner">
                     <span id="mood-emoji" class="text-6xl">🍲</span>
                 </div>
@@ -131,16 +125,14 @@
                 <h2 id="result-title" class="text-2xl font-extrabold mb-1">Creamy Truffle Pasta</h2>
                 <p id="result-desc" class="text-gray-500 dark:text-gray-400 text-sm mb-4">Rich, comforting carbs to warm your soul and elevate your evening mood.</p>
                 
-                <!-- AI Explanation Box -->
                 <div class="bg-indigo-50 dark:bg-gray-800/80 border border-indigo-100 dark:border-gray-700 p-3.5 rounded-2xl mb-4">
                     <div class="text-[11px] font-bold text-indigo-700 dark:text-indigo-400 uppercase tracking-wide mb-1">🤖 Why this recommendation?</div>
-                    <p class="text-xs text-indigo-900 dark:text-indigo-200 leading-relaxed">Based on your mood vector and selected tags, our model calculated a high affinity for warm, comforting textures.</p>
+                    <p id="result-reason" class="text-xs text-indigo-900 dark:text-indigo-200 leading-relaxed">Based on your mood vector and selected tags, our model calculated a high affinity for warm, comforting textures.</p>
                 </div>
             </div>
 
-            <!-- Action Buttons -->
             <div class="space-y-2.5 pt-2">
-                <button onclick="showToast('Recipe instructions unlocked!')" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-3.5 rounded-2xl shadow-lg shadow-indigo-600/25 transition-all text-sm">
+                <button onclick="openRecipe()" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-3.5 rounded-2xl shadow-lg shadow-indigo-600/25 transition-all text-sm">
                     View Full Recipe & Instructions
                 </button>
                 <button onclick="goBack()" class="w-full bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300 font-semibold py-3.5 rounded-2xl hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors text-sm">
@@ -149,7 +141,49 @@
             </div>
         </div>
 
-        <!-- Screen 4: Saved / Favorites Screen -->
+        <!-- Screen 4: Full Recipe Details (Mockup) -->
+        <div id="screen-recipe" class="hidden flex-1 flex flex-col p-6 justify-between overflow-y-auto">
+            <div>
+                <div class="flex justify-between items-center mb-4">
+                    <button onclick="backToResult()" class="text-xs font-semibold text-gray-600 dark:text-gray-300 bg-gray-100 dark:bg-gray-800 px-3 py-1.5 rounded-xl hover:bg-gray-200 transition-colors">← Back to Match</button>
+                    <span id="recipe-meta" class="text-xs font-semibold text-indigo-600 dark:text-indigo-400 bg-indigo-50 dark:bg-indigo-950 px-2.5 py-1 rounded-full">⏱️ 18 mins</span>
+                </div>
+
+                <div class="flex items-center space-x-3 mb-4">
+                    <span id="recipe-emoji" class="text-4xl">🍲</span>
+                    <div>
+                        <h2 id="recipe-title" class="text-xl font-extrabold leading-tight">Creamy Truffle Pasta</h2>
+                        <span class="text-xs text-gray-400">Sample Recipe Card (Mockup Data)</span>
+                    </div>
+                </div>
+
+                <div class="mb-4">
+                    <h3 class="text-xs font-bold uppercase tracking-wider text-gray-400 mb-2">Ingredients</h3>
+                    <ul id="recipe-ingredients" class="text-xs space-y-1.5 bg-gray-50 dark:bg-gray-800/60 p-3.5 rounded-2xl border border-gray-100 dark:border-gray-700">
+                        <li>• 200g pasta of choice</li>
+                        <li>• 100ml light cream & 1 tsp truffle oil</li>
+                        <li>• Grated parmesan, black pepper & fresh herbs</li>
+                    </ul>
+                </div>
+
+                <div>
+                    <h3 class="text-xs font-bold uppercase tracking-wider text-gray-400 mb-2">Instructions</h3>
+                    <ol id="recipe-steps" class="text-xs space-y-2 bg-gray-50 dark:bg-gray-800/60 p-3.5 rounded-2xl border border-gray-100 dark:border-gray-700 list-decimal list-inside">
+                        <li>Boil salted water and cook pasta until al dente.</li>
+                        <li>Warm cream gently in a pan without boiling.</li>
+                        <li>Toss pasta with sauce, parmesan, and finish with truffle oil.</li>
+                    </ol>
+                </div>
+            </div>
+
+            <div class="pt-4">
+                <button onclick="goBack()" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-3.5 rounded-2xl text-sm transition-colors">
+                    Done / Back to Home
+                </button>
+            </div>
+        </div>
+
+        <!-- Screen 5: Saved / Favorites Screen -->
         <div id="screen-favorites" class="hidden flex-1 flex flex-col p-6 justify-between overflow-y-auto">
             <div>
                 <div class="flex justify-between items-center mb-6">
@@ -173,7 +207,7 @@
             </div>
 
             <div class="pt-4 text-center">
-                <span class="text-xs text-gray-400">Synced with AI Recommendation History</span>
+                <span class="text-xs text-gray-400">Pre-loaded Mockup Favorites</span>
             </div>
         </div>
 
@@ -181,11 +215,99 @@
 
     <!-- Toast Notification Popup -->
     <div id="toast" class="fixed bottom-8 bg-gray-900 text-white dark:bg-white dark:text-gray-900 px-4 py-2.5 rounded-xl shadow-xl text-xs font-medium opacity-0 translate-y-4 transition-all pointer-events-none">
-        ✨ Action simulated: Recipe saved to favorites!
+        ✨ Action simulated!
     </div>
 
     <!-- JavaScript Logic -->
     <script>
+        const recipesByMood = {
+            cozy: {
+                emoji: "🍲",
+                match: "98% Match",
+                title: "Creamy Truffle Pasta",
+                desc: "Rich, comforting carbs and warm spices to soothe your evening.",
+                reason: "Based on your Cozy & Lazy mood, our model calculated a high affinity for warm, comforting textures.",
+                meta: "⏱️ 18 mins",
+                ingredients: [
+                    "200g pasta of choice",
+                    "100ml light cream & 1 tsp truffle oil",
+                    "Grated parmesan, black pepper & fresh herbs"
+                ],
+                steps: [
+                    "Boil salted water and cook pasta until al dente.",
+                    "Warm cream gently in a pan without boiling.",
+                    "Toss pasta with sauce, parmesan, and finish with truffle oil."
+                ]
+            },
+            energy: {
+                emoji: "⚡",
+                match: "96% Match",
+                title: "Power Chicken & Quinoa Bowl",
+                desc: "Instant energy boost with high-protein goodness and vital nutrients.",
+                reason: "Selected for a balanced protein-to-carb ratio to help counter fatigue quickly.",
+                meta: "⏱️ 15 mins",
+                ingredients: [
+                    "150g grilled chicken breast (sliced)",
+                    "1 cup cooked quinoa & baby spinach",
+                    "Lemon-tahini drizzle & pumpkin seeds"
+                ],
+                steps: [
+                    "Layer quinoa and spinach in a deep bowl.",
+                    "Top with warm sliced chicken and seeds.",
+                    "Drizzle with lemon-tahini dressing and serve."
+                ]
+            },
+            social: {
+                emoji: "🎉",
+                match: "95% Match",
+                title: "Crispy Fiesta Nachos Platter",
+                desc: "Vibrant, colorful flavors and shareable bites meant for good times.",
+                reason: "High shareability and bold contrast of flavors suited for a social vibe.",
+                meta: "⏱️ 12 mins",
+                ingredients: [
+                    "Tortilla chips, black beans & sweet corn",
+                    "Shredded cheddar, salsa & guacamole",
+                    "Fresh cilantro & jalapeño slices"
+                ],
+                steps: [
+                    "Spread chips on an oven-safe plate with beans and cheese.",
+                    "Warm briefly until cheese melts.",
+                    "Add salsa, guacamole, and fresh toppings before sharing."
+                ]
+            },
+            healthy: {
+                emoji: "🥗",
+                match: "97% Match",
+                title: "Mediterranean Avocado Greens",
+                desc: "Clean nutrients, greens, and superfoods to keep your mind sharp.",
+                reason: "Light, micronutrient-dense ingredients chosen to keep digestion easy and focus high.",
+                meta: "⏱️ 10 mins",
+                ingredients: [
+                    "Mixed greens, cherry tomatoes & cucumber",
+                    "1/2 sliced avocado & feta crumbles",
+                    "Olive oil, lemon juice & oregano"
+                ],
+                steps: [
+                    "Combine greens, tomatoes, and cucumber in a bowl.",
+                    "Add sliced avocado and feta gently.",
+                    "Dress with olive oil, lemon, and oregano."
+                ]
+            }
+        };
+
+        let currentRecipe = recipesByMood.cozy;
+        let savedItems = [
+            { title: "Creamy Truffle Pasta", mood: "Cozy & Lazy Mood", emoji: "🍲", match: "98%" }
+        ];
+
+        function hideAllScreens() {
+            document.getElementById('screen-home').classList.add('hidden');
+            document.getElementById('screen-loading').classList.add('hidden');
+            document.getElementById('screen-result').classList.add('hidden');
+            document.getElementById('screen-recipe').classList.add('hidden');
+            document.getElementById('screen-favorites').classList.add('hidden');
+        }
+
         function toggleTag(btn) {
             btn.classList.toggle('bg-indigo-600');
             btn.classList.toggle('text-white');
@@ -200,46 +322,99 @@
             const html = document.getElementById('html-root');
             const themeIcon = document.getElementById('theme-icon');
             html.classList.toggle('dark');
-            if (html.classList.contains('dark')) {
-                themeIcon.innerText = '☀️';
-            } else {
-                themeIcon.innerText = '🌙';
+            themeIcon.innerText = html.classList.contains('dark') ? '☀️' : '🌙';
+        }
+
+        function renderFavorites() {
+            const listEl = document.getElementById('favorites-list');
+            document.getElementById('saved-count').innerText = savedItems.length;
+
+            if (savedItems.length === 0) {
+                listEl.innerHTML = `<p class="text-xs text-gray-400 text-center py-8">No saved recipes yet.</p>`;
+                return;
             }
+
+            listEl.innerHTML = savedItems.map(item => `
+                <div class="p-4 bg-gray-50 dark:bg-gray-800/60 rounded-2xl border border-gray-100 dark:border-gray-700 flex items-center justify-between">
+                    <div class="flex items-center space-x-3">
+                        <span class="text-3xl">${item.emoji}</span>
+                        <div>
+                            <h4 class="font-bold text-sm">${item.title}</h4>
+                            <span class="text-[11px] text-gray-400">${item.mood}</span>
+                        </div>
+                    </div>
+                    <span class="text-xs font-semibold text-green-600 dark:text-green-400">${item.match}</span>
+                </div>
+            `).join('');
         }
 
         function toggleFavorite(btn) {
-            btn.classList.toggle('text-red-500');
-            showToast("Recipe saved to favorites!");
+            const exists = savedItems.some(r => r.title === currentRecipe.title);
+            if (!exists) {
+                savedItems.push({
+                    title: currentRecipe.title,
+                    mood: "AI Recommendation",
+                    emoji: currentRecipe.emoji,
+                    match: currentRecipe.match.replace(" Match", "")
+                });
+                btn.classList.add('text-red-500');
+                renderFavorites();
+                showToast("Recipe saved to favorites!");
+            } else {
+                savedItems = savedItems.filter(r => r.title !== currentRecipe.title);
+                btn.classList.remove('text-red-500');
+                renderFavorites();
+                showToast("Removed from favorites.");
+            }
         }
 
-        function selectMood(moodName, emoji, recipeName, description) {
-            document.getElementById('screen-home').classList.add('hidden');
-            document.getElementById('screen-favorites').classList.add('hidden');
-            document.getElementById('screen-result').classList.add('hidden');
+        function selectMood(moodKey) {
+            currentRecipe = recipesByMood[moodKey] || recipesByMood.cozy;
+            hideAllScreens();
             document.getElementById('screen-loading').classList.remove('hidden');
 
             setTimeout(() => {
-                document.getElementById('screen-loading').classList.add('hidden');
-                
-                document.getElementById('mood-emoji').innerText = emoji;
-                document.getElementById('result-title').innerText = recipeName;
-                document.getElementById('result-desc').innerText = description;
+                document.getElementById('mood-emoji').innerText = currentRecipe.emoji;
+                document.getElementById('result-match').innerText = currentRecipe.match;
+                document.getElementById('result-title').innerText = currentRecipe.title;
+                document.getElementById('result-desc').innerText = currentRecipe.desc;
+                document.getElementById('result-reason').innerText = currentRecipe.reason;
 
+                hideAllScreens();
                 document.getElementById('screen-result').classList.remove('hidden');
-            }, 1000);
+            }, 900);
+        }
+
+        function openRecipe() {
+            document.getElementById('recipe-emoji').innerText = currentRecipe.emoji;
+            document.getElementById('recipe-title').innerText = currentRecipe.title;
+            document.getElementById('recipe-meta').innerText = currentRecipe.meta;
+
+            document.getElementById('recipe-ingredients').innerHTML = currentRecipe.ingredients
+                .map(ing => `<li>• ${ing}</li>`)
+                .join('');
+
+            document.getElementById('recipe-steps').innerHTML = currentRecipe.steps
+                .map(step => `<li>${step}</li>`)
+                .join('');
+
+            hideAllScreens();
+            document.getElementById('screen-recipe').classList.remove('hidden');
+        }
+
+        function backToResult() {
+            hideAllScreens();
+            document.getElementById('screen-result').classList.remove('hidden');
         }
 
         function openFavorites() {
-            document.getElementById('screen-home').classList.add('hidden');
-            document.getElementById('screen-result').classList.add('hidden');
-            document.getElementById('screen-loading').classList.add('hidden');
+            renderFavorites();
+            hideAllScreens();
             document.getElementById('screen-favorites').classList.remove('hidden');
         }
 
         function goBack() {
-            document.getElementById('screen-result').classList.add('hidden');
-            document.getElementById('screen-favorites').classList.add('hidden');
-            document.getElementById('screen-loading').classList.add('hidden');
+            hideAllScreens();
             document.getElementById('screen-home').classList.remove('hidden');
         }
 
